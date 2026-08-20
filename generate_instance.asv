@@ -1,0 +1,36 @@
+clc
+clear
+close all
+dbstop if error
+
+for prob=1:28
+    if prob<=10
+        Data_Path{prob,1} = fullfile(sprintf('Mk%02d.mat', prob));
+    else
+        Data_Path{prob,1} = fullfile(sprintf('%02da.mat', prob));
+    end
+end
+for prob=1:28
+    clearvars -except Data_Path prob
+    load(Data_Path{prob,1});
+    W=M+2;
+    aw=ceil(W/2);
+
+    for job=1:N
+        for oper=1:H(job)
+            Mac_Set=find(Time{job}(oper,:)~=0);
+            for mac=Mac_Set
+                W_Set=randperm(W,aw);
+                for work=W_Set
+                    time{job,oper}(mac,work)=Time{job}(oper,mac);
+                end
+            end
+            if rand<0.15
+                I(job,oper)=1;
+            else
+                I(job,oper)=0;
+            end
+        end
+    end
+
+end
